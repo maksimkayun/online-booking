@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
 import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
 import {
     Form,
     FormControl,
@@ -14,15 +15,7 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form'
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover'
 import { Input } from '@/components/ui/input'
-import { format } from 'date-fns'
-import { CalendarIcon } from 'lucide-react'
-import { cn } from '@/lib/utils'
 
 const searchFormSchema = z.object({
     location: z.string().min(2, 'Location must be at least 2 characters'),
@@ -32,18 +25,33 @@ const searchFormSchema = z.object({
 })
 
 export function SearchForm() {
+    const router = useRouter()
+    const searchParams = useSearchParams()
+
     const form = useForm<z.infer<typeof searchFormSchema>>({
         resolver: zodResolver(searchFormSchema),
         defaultValues: {
-            location: '',
-            guests: 1,
+            location: searchParams.get('location') || '',
+            guests: parseInt(searchParams.get('guests') || '1'),
+            checkIn: searchParams.get('checkIn') ? new Date(searchParams.get('checkIn')!) : new Date(),
+            checkOut: searchParams.get('checkOut')
+                ? new Date(searchParams.get('checkOut')!)
+                : new Date(Date.now() + 24 * 60 * 60 * 1000), // следующий день
         },
     })
 
     async function onSubmit(values: z.infer<typeof searchFormSchema>) {
-        // Handle search submit
-        console.log(values)
+        const params = new URLSearchParams()
+        params.set('location', values.location)
+        params.set('checkIn', values.checkIn.toISOString())
+        params.set('checkOut', values.checkOut.toISOString())
+        params.set('guests', values.guests.toString())
+
+        router.push(`/?${params.toString()}`)
     }
+
+    const { watch } = form
+    const checkInDate = watch('checkIn')
 
     return (
         <Form {...form}>
@@ -67,39 +75,18 @@ export function SearchForm() {
                         control={form.control}
                         name="checkIn"
                         render={({ field }) => (
-                            <FormItem className="flex flex-col">
+                            <FormItem>
                                 <FormLabel>Check in</FormLabel>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <FormControl>
-                                            <Button
-                                                variant="outline"
-                                                className={cn(
-                                                    'pl-3 text-left font-normal',
-                                                    !field.value && 'text-muted-foreground'
-                                                )}
-                                            >
-                                                {field.value ? (
-                                                    format(field.value, 'PPP')
-                                                ) : (
-                                                    <span>Pick a date</span>
-                                                )}
-                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                            </Button>
-                                        </FormControl>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
-                                        <Calendar
-                                            mode="single"
-                                            selected={field.value}
-                                            onSelect={field.onChange}
-                                            disabled={(date) =>
-                                                date < new Date() || date < new Date('1900-01-01')
-                                            }
-                                            initialFocus
-                                        />
-                                    </PopoverContent>
-                                </Popover>
+                                <FormControl>
+                                    <DatePicker
+                                        selected={field.value}
+                                        onChange={(date: Date | null) => field.onChange(date || new Date())}
+                                        minDate={new Date()}
+                                        dateFormat="MMM d, yyyy"
+                                        className="w-full px-3 py-2 border rounded-md"
+                                        placeholderText="Select check-in date"
+                                    />
+                                </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -109,39 +96,18 @@ export function SearchForm() {
                         control={form.control}
                         name="checkOut"
                         render={({ field }) => (
-                            <FormItem className="flex flex-col">
+                            <FormItem>
                                 <FormLabel>Check out</FormLabel>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <FormControl>
-                                            <Button
-                                                variant="outline"
-                                                className={cn(
-                                                    'pl-3 text-left font-normal',
-                                                    !field.value && 'text-muted-foreground'
-                                                )}
-                                            >
-                                                {field.value ? (
-                                                    format(field.value, 'PPP')
-                                                ) : (
-                                                    <span>Pick a date</span>
-                                                )}
-                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                            </Button>
-                                        </FormControl>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
-                                        <Calendar
-                                            mode="single"
-                                            selected={field.value}
-                                            onSelect={field.onChange}
-                                            disabled={(date) =>
-                                                date < new Date() || date < new Date('1900-01-01')
-                                            }
-                                            initialFocus
-                                        />
-                                    </PopoverContent>
-                                </Popover>
+                                <FormControl>
+                                    <DatePicker
+                                        selected={field.value}
+                                        onChange={(date: Date | null) => field.onChange(date || new Date())}
+                                        minDate={checkInDate || new Date()}
+                                        dateFormat="MMM d, yyyy"
+                                        className="w-full px-3 py-2 border rounded-md"
+                                        placeholderText="Select check-out date"
+                                    />
+                                </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
