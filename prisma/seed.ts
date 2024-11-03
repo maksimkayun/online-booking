@@ -1,6 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
+const hotelImages = [
+    'https://images.unsplash.com/photo-1566073771259-6a8506099945',
+    'https://images.unsplash.com/photo-1582719508461-905c673771fd',
+    'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb',
+    'https://images.unsplash.com/photo-1445019980597-93fa8acb246c'
+]
 
 async function main() {
     // Создаем отели
@@ -11,10 +17,7 @@ async function main() {
                 description: "Experience ultimate luxury in our 5-star resort with stunning ocean views",
                 address: "123 Beach Road, Paradise City",
                 rating: 4.8,
-                images: [
-                    "https://images.unsplash.com/photo-1566073771259-6a8506099945",
-                    "https://images.unsplash.com/photo-1582719508461-905c673771fd"
-                ],
+                images: [hotelImages[0], hotelImages[1]],
                 rooms: {
                     create: [
                         {
@@ -39,10 +42,7 @@ async function main() {
                 description: "Modern comfort in the heart of downtown",
                 address: "456 Main Street, Metropolitan",
                 rating: 4.5,
-                images: [
-                    "https://images.unsplash.com/photo-1566073771259-6a8506099945",
-                    "https://images.unsplash.com/photo-1582719508461-905c673771fd"
-                ],
+                images: [hotelImages[0], hotelImages[1]],
                 rooms: {
                     create: [
                         {
@@ -67,10 +67,7 @@ async function main() {
                 description: "Cozy retreat with breathtaking mountain views",
                 address: "789 Highland Road, Mountain Valley",
                 rating: 4.6,
-                images: [
-                    "https://images.unsplash.com/photo-1566073771259-6a8506099945",
-                    "https://images.unsplash.com/photo-1582719508461-905c673771fd"
-                ],
+                images: [hotelImages[0], hotelImages[1]],
                 rooms: {
                     create: [
                         {

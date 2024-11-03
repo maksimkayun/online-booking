@@ -37,9 +37,11 @@ export function HotelDetails({ id }: HotelDetailsProps) {
             <CardContent>
                 <div className="relative h-96 w-full mb-6">
                     <Image
-                        src={hotel.images[0]}
+                        src={hotel.images?.[0] || 'https://images.unsplash.com/photo-1566073771259-6a8506099945'}
                         alt={hotel.name}
                         fill
+                        sizes="100vw"
+                        priority
                         className="object-cover rounded"
                     />
                 </div>
@@ -47,7 +49,7 @@ export function HotelDetails({ id }: HotelDetailsProps) {
                 <div className="mt-6">
                     <h2 className="text-2xl font-semibold mb-4">Available Rooms</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {hotel.rooms.map((room: any) => (
+                    {hotel.rooms.map((room: any) => (
                             <Card key={room.id} className="p-4">
                                 <h3 className="text-xl font-semibold">{room.type}</h3>
                                 <p className="text-gray-600">Capacity: {room.capacity} guests</p>

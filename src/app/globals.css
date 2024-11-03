@@ -2,34 +2,229 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Main colors */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --primary: 201 96% 32%;
+    --primary-foreground: 0 0% 98%;
+
+    /* UI Colors */
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Border & Effects */
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Hotel Cards */
+  .hotel-card {
+    @apply relative overflow-hidden rounded-xl bg-white shadow-md transition-all duration-300
+    hover:shadow-xl hover:-translate-y-1;
+  }
+
+  .hotel-card-image {
+    @apply relative h-64 w-full overflow-hidden;
+  }
+
+  .hotel-card-image img {
+    @apply h-full w-full object-cover transition-transform duration-500
+    hover:scale-110;
+  }
+
+  .hotel-card-rating {
+    @apply absolute top-4 right-4 flex items-center gap-1 rounded-full
+    bg-white/90 px-2 py-1 text-sm font-medium backdrop-blur-sm;
+  }
+
+  .hotel-card-content {
+    @apply p-5;
+  }
+
+  .hotel-card-title {
+    @apply text-xl font-semibold text-gray-900 line-clamp-1;
+  }
+
+  .hotel-card-location {
+    @apply mt-2 flex items-center gap-2 text-gray-600;
+  }
+
+  .hotel-card-price {
+    @apply mt-4 flex items-baseline gap-1;
+  }
+
+  .hotel-card-price-amount {
+    @apply text-2xl font-bold text-primary;
+  }
+
+  .hotel-card-price-period {
+    @apply text-sm text-gray-600;
+  }
+
+  /* Hero Section */
+  .hero-section {
+    @apply relative h-[70vh] min-h-[600px] w-full overflow-hidden;
+  }
+
+  .hero-overlay {
+    @apply absolute inset-0 bg-black/40;
+  }
+
+  .hero-content {
+    @apply relative z-10 flex h-full flex-col items-center justify-center
+    text-center text-white px-4;
+  }
+
+  .hero-title {
+    @apply max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl
+    [text-wrap:balance];
+  }
+
+  .hero-subtitle {
+    @apply mt-6 max-w-2xl text-lg sm:text-xl text-gray-100;
+  }
+
+  /* Search Form */
+  .search-form-wrapper {
+    @apply relative z-20 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8
+    -mt-24;
+  }
+
+  .search-form {
+    @apply rounded-2xl bg-white p-6 shadow-xl ring-1 ring-gray-200/50;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg bg-primary
+    px-4 py-2 text-sm font-medium text-white transition-colors
+    hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary
+    focus:ring-offset-2 active:scale-95 disabled:pointer-events-none
+    disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-lg bg-white
+    px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors
+    hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary
+    focus:ring-offset-2 active:scale-95 disabled:pointer-events-none
+    disabled:opacity-50;
+  }
+
+  /* Forms */
+  .form-input {
+    @apply block w-full rounded-lg border border-gray-300 bg-white px-3 py-2
+    text-gray-900 placeholder-gray-500 shadow-sm focus:border-primary
+    focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-gray-700;
+  }
+
+  /* DatePicker Customization */
+  .react-datepicker-wrapper {
+    @apply block w-full;
+  }
+
+  .react-datepicker__input-container input {
+    @apply w-full rounded-lg border border-gray-300 bg-white px-3 py-2
+    text-gray-900 placeholder-gray-500 shadow-sm transition-colors
+    focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary
+    sm:text-sm;
+  }
+
+  .react-datepicker {
+    @apply rounded-lg border border-gray-200 bg-white font-sans shadow-lg;
+  }
+
+  .react-datepicker__header {
+    @apply rounded-t-lg border-b border-gray-200 bg-gray-50;
+  }
+
+  .react-datepicker__day--selected {
+    @apply bg-primary text-white hover:bg-primary/90;
+  }
+
+  .react-datepicker__day--keyboard-selected {
+    @apply bg-primary/20 text-primary hover:bg-primary/30;
+  }
+
+  .react-datepicker__day:hover {
+    @apply rounded-md bg-gray-100;
+  }
+
+  /* Loading States */
+  .loading-spinner {
+    @apply animate-spin rounded-full border-2 border-gray-300 border-t-primary;
+  }
+
+  /* Animations */
+  .fade-in {
+    @apply animate-[fadeIn_0.5s_ease-in-out];
+  }
+
+  .slide-up {
+    @apply animate-[slideUp_0.5s_ease-in-out];
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
 }
 
+/* Utilities */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-}
-.react-datepicker-wrapper {
-  width: 100%;
-}
 
-.react-datepicker__input-container input {
-  @apply w-full px-3 py-2 text-sm border rounded-md;
-  @apply focus:outline-none focus:ring-2 focus:ring-primary;
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
 }

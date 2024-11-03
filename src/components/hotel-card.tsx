@@ -1,8 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { Star, MapPin, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Star } from 'lucide-react'
 
 interface HotelCardProps {
     hotel: {
@@ -10,42 +9,64 @@ interface HotelCardProps {
         name: string
         description: string
         rating: number
-        price: number
-        image: string
+        address: string
+        images: string[]
+        rooms: Array<{
+            capacity: number
+            price: number
+        }>
     }
 }
 
 export function HotelCard({ hotel }: HotelCardProps) {
+    const minPrice = Math.min(...hotel.rooms.map(room => room.price))
+    const maxCapacity = Math.max(...hotel.rooms.map(room => room.capacity))
+
     return (
-        <Card className="overflow-hidden">
-            <CardHeader className="p-0">
-                <div className="relative h-48 w-full">
-                    <Image
-                        src={hotel.image}
-                        alt={hotel.name}
-                        fill
-                        className="object-cover"
-                    />
+        <article className="hotel-card">
+            <div className="hotel-card-image">
+                <Image
+                    src={hotel.images[0]}
+                    alt={hotel.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority
+                />
+                <div className="hotel-card-rating">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span>{hotel.rating.toFixed(1)}</span>
                 </div>
-            </CardHeader>
-            <CardContent className="p-4">
-                <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-semibold">{hotel.name}</h3>
-                    <div className="flex items-center">
-                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span className="ml-1">{hotel.rating}</span>
+            </div>
+
+            <div className="hotel-card-content">
+                <h3 className="hotel-card-title">{hotel.name}</h3>
+
+                <div className="hotel-card-location">
+                    <MapPin className="h-4 w-4" />
+                    <span className="text-sm truncate">{hotel.address}</span>
+                </div>
+
+                <div className="mt-2 flex items-center gap-2 text-gray-600">
+                    <Users className="h-4 w-4" />
+                    <span className="text-sm">Up to {maxCapacity} guests</span>
+                </div>
+
+                <p className="mt-3 text-sm text-gray-600 line-clamp-2">{hotel.description}</p>
+
+                <div className="mt-4 flex items-center justify-between">
+                    <div className="hotel-card-price">
+                        <span className="hotel-card-price-amount">${minPrice}</span>
+                        <span className="hotel-card-price-period">/night</span>
                     </div>
+
+                    <Button asChild className="px-6">
+                        <Link href={`/hotels/${hotel.id}`}>
+                            View Details
+                        </Link>
+                    </Button>
                 </div>
-                <p className="text-sm text-gray-600 mb-4">{hotel.description}</p>
-                <p className="text-lg font-bold">
-                    From ${hotel.price} <span className="text-sm font-normal">per night</span>
-                </p>
-            </CardContent>
-            <CardFooter className="p-4 pt-0">
-                <Link href={`/hotels/${hotel.id}`} className="w-full">
-                    <Button className="w-full">View Details</Button>
-                </Link>
-            </CardFooter>
-        </Card>
+            </div>
+        </article>
     )
 }
